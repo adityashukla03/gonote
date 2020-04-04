@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gonote/task.dart';
 import 'package:gonote/create.dart';
 import 'package:gonote/list.dart';
+import 'package:gonote/task.dart';
 
 void main() => runApp(NoteApp());
 
@@ -41,7 +41,7 @@ class NoteState extends State<TODO> {
       title: 'Go Note',
       initialRoute: '/',
       routes: {
-        '/': (context) => NoteList(tasks: tasks, onToggle: onTaskToggled),
+        '/': (context) => NoteList(),
         '/create': (context) => NoteCreate(
           onCreate: onTaskCreated,
         ),
