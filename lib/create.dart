@@ -36,9 +36,14 @@ class NoteCreateState extends State<NoteCreate> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.done),
         onPressed: () async {
-          await collection.add(
-            {'name': controller.text, 'completed': false},
-          );
+          if (controller.text.isNotEmpty) {
+            await collection.add(
+              {'name': controller.text, 'completed': false},
+            );
+          } else {
+            //TODO: field validation
+            print("Empty field");
+          }
           Navigator.pop(context);
         },
       ),
