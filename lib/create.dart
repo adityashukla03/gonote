@@ -28,19 +28,17 @@ class NoteCreateState extends State<NoteCreate> {
           child: Padding(
               padding: EdgeInsets.all(16),
               child: TextField(
-                // Opens the keyboard automatically
+                  // Opens the keyboard automatically
                   autofocus: true,
                   controller: controller,
-                  decoration: InputDecoration(
-                      labelText: 'Enter name for your task'
-                  )
-              )
-          )
-      ),
+                  decoration:
+                      InputDecoration(labelText: 'Enter name for your task')))),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.done),
-        onPressed: ()  async {
-          await collection.add({'name': controller.text, 'completed': false});
+        onPressed: () async {
+          await collection.add(
+            {'name': controller.text, 'completed': false},
+          );
           Navigator.pop(context);
         },
       ),

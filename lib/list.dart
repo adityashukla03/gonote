@@ -14,29 +14,33 @@ class NoteList extends StatelessWidget {
         stream: collection.snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           // Handling errors from firebase
-          if (snapshot.hasError)
-            return Text('Error: ${snapshot.error}');
+          if (snapshot.hasError) return Text('Error: ${snapshot.error}');
           switch (snapshot.connectionState) {
-          // Display if still loading data
-            case ConnectionState.waiting: return Text('Loading...');
+            case ConnectionState.waiting:
+              return CircularProgressIndicator();
             default:
               return ListView(
-                // Got rid of Task class
-                children: snapshot.data.documents.map((DocumentSnapshot document) {
-                  return CheckboxListTile(
-                      title:  Text(document['name']),
+                children: snapshot.data.documents.map(
+                  (document) {
+                    return CheckboxListTile(
+                      title: Text(document['name']),
                       value: document['completed'],
                       // Updating the database on task completion
-                      onChanged: (newValue) => collection.document(document.documentID).updateData({'completed': newValue})
-                  );
-                }).toList(),
+                      onChanged: (newValue) =>
+                          collection.document(document.documentID).updateData(
+                        {'completed': newValue},
+                      ),
+                    );
+                  },
+                ).toList(),
               );
           }
         },
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.pushNamed(context, '/create'),
-          child: Icon(Icons.add)),
+        onPressed: () => Navigator.pushNamed(context, '/create'),
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
