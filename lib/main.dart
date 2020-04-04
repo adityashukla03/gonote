@@ -28,13 +28,20 @@ class NoteState extends State<TODO> {
     });
   }
 
+  // A new callback function to toggle task's completion
+  void onTaskToggled(Task task) {
+    setState(() {
+      task.setCompleted(!task.isCompleted());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Go Note',
       initialRoute: '/',
       routes: {
-        '/': (context) => NoteList(tasks: tasks),
+        '/': (context) => NoteList(tasks: tasks, onToggle: onTaskToggled),
         '/create': (context) => NoteCreate(
           onCreate: onTaskCreated,
         ),
