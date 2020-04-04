@@ -1,22 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:gonote/task.dart';
+import 'package:gonote/create.dart';
+import 'package:gonote/list.dart';
 
-void main() => runApp(TODOApp());
+void main() => runApp(NoteApp());
 
-class TODOApp extends StatelessWidget {
+class NoteApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return TODO();
+  }
+}
+
+class TODO extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return NoteState();
+  }
+}
+
+class NoteState extends State<TODO> {
+  final List<Task> tasks = [];
+
+  void onTaskCreated(String name) {
+    setState(() {
+      tasks.add(Task(name));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Go Note',
-        home: Scaffold(
-          // AppBar is the header in the top of the screen
-            appBar: AppBar(
-              title: Text('Go Note'),
-            ),
-            body: Center(
-                child: Text('Notes')
-            )
-        )
+      title: 'Go Note',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => NoteList(tasks: tasks),
+        '/create': (context) => NoteCreate(
+          onCreate: onTaskCreated,
+        ),
+      },
     );
   }
 }
