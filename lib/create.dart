@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Since we are handling user input, state is used
 class NoteCreate extends StatefulWidget {
@@ -15,7 +16,7 @@ class NoteCreate extends StatefulWidget {
 }
 
 class NoteCreateState extends State<NoteCreate> {
-
+  final collection = Firestore.instance.collection('tasks');
   // Controller that handles the TextField
   final TextEditingController controller = TextEditingController();
 
@@ -38,10 +39,8 @@ class NoteCreateState extends State<NoteCreate> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.done),
-        onPressed: () {
-          // Call the callback with the new task name
-          widget.onCreate(controller.text);
-          // Go back to list screen
+        onPressed: ()  async {
+          await collection.add({'name': controller.text, 'completed': false});
           Navigator.pop(context);
         },
       ),
