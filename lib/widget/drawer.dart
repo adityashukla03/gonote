@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
+import 'package:provider/provider.dart';
+import '../model/user.dart' show CurrentUser;
 
 class AppDrawer extends StatelessWidget {
 
@@ -26,6 +28,11 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider
+        .of<CurrentUser>(context)
+        ?.data;
+    final displayName = user?.displayName;
+    final email = user?.email;
     return Drawer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -33,8 +40,8 @@ class AppDrawer extends StatelessWidget {
           Container(
             height: 150,
             child: UserAccountsDrawerHeader(
-              accountName: Text("Sumit"),
-              accountEmail: Text("sumit.thakur@gorapid.io"),
+              accountName: Text(displayName),
+              accountEmail: Text(email),
             ),
           ),
 
