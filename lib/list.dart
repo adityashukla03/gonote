@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import './widget/drawer.dart';
 
 class NoteList extends StatelessWidget {
   final collection = Firestore.instance.collection('tasks');
@@ -17,7 +18,7 @@ class NoteList extends StatelessWidget {
           if (snapshot.hasError) return Text('Error: ${snapshot.error}');
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             default:
               return ListView(
                 children: snapshot.data.documents.map(
@@ -37,6 +38,7 @@ class NoteList extends StatelessWidget {
           }
         },
       ),
+      drawer: AppDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.pushNamed(context, '/create'),
         child: Icon(Icons.add),
