@@ -31,30 +31,39 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body : Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                colors: [Colors.blue, Colors.teal],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter
+            )
+        ),
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(
-          child: Container(
-            constraints: const BoxConstraints(
-              maxWidth: 560,
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 48),
-            child: Form(
-              key: _loginForm,
-              child: Column(
-                children: <Widget>[
-                  const SizedBox(height: 32),
-                  const Text(
-                    'Go Note',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.normal,
+          child: Center(
+            child: Container(
+              constraints: const BoxConstraints(
+                maxWidth: 560,
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 48),
+              child: Form(
+                key: _loginForm,
+                child: Column(
+                  children: <Widget>[
+                    const SizedBox(height: 32),
+                    const Text(
+                      'Go Note',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.normal,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                  if (_useEmailSignIn) ..._buildEmailSignInFields(),
-                  if (!_useEmailSignIn) ..._buildGoogleSignInFields(),
-                  if (_errorMessage != null) _buildLoginMessage(),
-                ],
+                    const SizedBox(height: 32),
+                    if (_useEmailSignIn) ..._buildEmailSignInFields(),
+                    if (!_useEmailSignIn) ..._buildGoogleSignInFields(),
+                    if (_errorMessage != null) _buildLoginMessage(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -65,6 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   List<Widget> _buildGoogleSignInFields() => [
         RaisedButton(
+          color: Colors.white70,
           padding: const EdgeInsets.all(0),
           onPressed: _signInWithGoogle,
           child: Row(

@@ -47,6 +47,7 @@ class NoteState extends State<TODO> {
     return StreamProvider.value(
       value: FirebaseAuth.instance.onAuthStateChanged
           .map((user) => CurrentUser.create(user)),
+      initialData: CurrentUser.initial,
       child: Consumer<CurrentUser>(
         builder: (context, user, _) => MaterialApp(
           title: 'Go Note',
