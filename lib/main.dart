@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter/material.dart';
 import 'package:gonote/create.dart';
-import 'package:gonote/list.dart';
 import 'package:gonote/login.dart';
 import 'package:gonote/screens/home.dart';
 import 'package:gonote/task.dart';
 import 'package:provider/provider.dart';
 
 import './model/user.dart' show CurrentUser;
+import './screens/note_editor.dart';
 
 void main() => runApp(NoteApp());
 
@@ -58,6 +58,7 @@ class NoteState extends State<TODO> {
             '/create': (context) => NoteCreate(
               onCreate: onTaskCreated,
             ),
+            '/note': (context) => NodeEditor(),
           },
         ),
       ),
