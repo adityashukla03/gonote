@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:gonote/create.dart';
 import 'package:gonote/list.dart';
 import 'package:gonote/login.dart';
+import 'package:gonote/screens/home.dart';
 import 'package:gonote/task.dart';
 import 'package:provider/provider.dart';
 
 import './model/user.dart' show CurrentUser;
-
-
 
 void main() => runApp(NoteApp());
 
@@ -54,7 +53,7 @@ class NoteState extends State<TODO> {
           initialRoute: '/',
           home: user.isInitialValue
               ? Scaffold(body: const SizedBox())
-              : user.data != null ? NoteList() : LoginScreen(),
+              : user.data != null ? HomeScreen() : LoginScreen(),
           routes: {
             '/create': (context) => NoteCreate(
               onCreate: onTaskCreated,
