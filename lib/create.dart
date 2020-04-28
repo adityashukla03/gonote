@@ -18,35 +18,50 @@ class NoteCreate extends StatefulWidget {
 }
 
 class NoteCreateState extends State<NoteCreate> {
-  final collection = Firestore.instance.collection('tasks');
   final notesCollection = Firestore.instance.collection('notes');
 
   // Controller that handles the TextField
-  final TextEditingController controller = TextEditingController();
+  final TextEditingController notesTitleTextController =
+      TextEditingController();
+  final TextEditingController notesContentTextController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider
-        .of<CurrentUser>(context)
-        ?.data;
+    final user = Provider.of<CurrentUser>(context)?.data;
     final uid = user?.uid;
     return Scaffold(
       appBar: AppBar(title: Text('Create a task')),
       body: Center(
-          child: Padding(
-              padding: EdgeInsets.all(16),
-              child: TextField(
-                  // Opens the keyboard automatically
-                  autofocus: true,
-                  controller: controller,
-                  decoration:
-                      InputDecoration(labelText: 'Enter name for your task')))),
+        child: Padding(
+          padding: EdgeInsets.all(32),
+          child: Column(
+            children: <Widget>[
+              TextField(
+                autofocus: true,
+                controller: notesTitleTextController,
+                decoration:
+                    InputDecoration(labelText: 'Enter name for your task'),
+              ),
+              TextField(
+                autofocus: true,
+                controller: notesContentTextController,
+                decoration: InputDecoration(labelText: 'Content'),
+              ),
+            ],
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.done),
         onPressed: () async {
-          if (controller.text.isNotEmpty) {
+          if (notesTitleTextController.text.isNotEmpty) {
             await notesCollection.add(
-              {'title': controller.text, 'state': 0, 'uid': uid},
+              {
+                'uid': uid,
+                'title': notesTitleTextController.text,
+                'content': notesContentTextController.text,
+              },
             );
           } else {
             //TODO: field validation
