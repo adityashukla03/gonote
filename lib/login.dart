@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
             width: 22,
             height: 22,
             margin: const EdgeInsets.only(top: 12),
-            child: const CircularProgressIndicator(),
+            child: const CircularProgressIndicator(backgroundColor: Colors.black,),
           ),
       ];
 
