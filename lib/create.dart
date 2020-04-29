@@ -33,42 +33,17 @@ class NoteCreateState extends State<NoteCreate> {
     final uid = user?.uid;
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+            color: Color(0xC2000000)
+        ),
         backgroundColor: Colors.white,
         elevation: 0.0,
       ),
-      body: Form(
-        key: _formKey,
-        child: Container(
-          padding: EdgeInsets.only(top: 50),
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.all(32),
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    validator: (val) =>
-                        val.isEmpty && val.length == 0 ? 'Enter a Note title' : null,
-                    autofocus: true,
-                    controller: notesTitleTextController,
-                    decoration:
-                        InputDecoration(labelText: 'Title'),
-                  ),
-                  TextFormField(
-                    autofocus: true,
-                    controller: notesContentTextController,
-                    decoration: InputDecoration(labelText: 'Content'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+      body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.done),
         onPressed: () async {
           final timestamp = DateTime.now();
-          if (_formKey.currentState.validate()) {
             Map<String, dynamic> data = {
               'uid': uid,
               'title': notesTitleTextController.text,
@@ -77,9 +52,58 @@ class NoteCreateState extends State<NoteCreate> {
             };
             await notesCollection.add(data);
             Navigator.pop(context);
-          }
         },
       ),
     );
   }
+
+  Widget _buildBody(BuildContext context) => DefaultTextStyle(
+    style: TextStyle(
+      color: Color(0xC2000000),
+      fontSize: 18,
+      height: 1.3125,
+    ),
+    child: Container(
+      height: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: SingleChildScrollView(
+        child: _buildNoteDetail(),
+      ),
+    ),
+  );
+
+  Widget _buildNoteDetail() => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: <Widget>[
+      TextField(
+        controller: notesTitleTextController,
+        style: TextStyle(
+          color: Color(0xFF202124),
+          fontSize: 21,
+          height: 19 / 16,
+          fontWeight: FontWeight.bold,
+        ),
+        decoration: const InputDecoration(
+          hintText: 'Title',
+          border: InputBorder.none,
+          counter: const SizedBox(),
+        ),
+        maxLines: null,
+        maxLength: 1024,
+        textCapitalization: TextCapitalization.sentences,
+      ),
+      const SizedBox(height: 14),
+      TextField(
+        controller: notesContentTextController,
+        style: TextStyle(
+          color: Color(0xC2000000),
+          fontSize: 18,
+          height: 1.3125,
+        ),
+        decoration: const InputDecoration.collapsed(hintText: 'Content'),
+        maxLines: null,
+        textCapitalization: TextCapitalization.sentences,
+      ),
+    ],
+  );
 }
