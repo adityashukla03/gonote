@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:flutter/material.dart';
 import 'package:gonote/model/note.dart';
 import 'package:gonote/widget/notes_grid.dart';
 import 'package:gonote/widget/notes_list.dart';
+import 'package:provider/provider.dart';
+
 import '../model/user.dart' show CurrentUser;
 import '../widget/drawer.dart';
 
@@ -15,28 +15,34 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _gridView = true; // `true` to show a Grid, otherwise a List.
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) => StreamProvider.value(
         value: _createNoteStream(context),
         child: Scaffold(
-          body: CustomScrollView(
-            slivers: <Widget>[
-              _appBar(context),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 24),
+          key: _scaffoldKey,
+          body: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints.tightFor(width: 720),
+              child: CustomScrollView(
+                slivers: <Widget>[
+                  _appBar(context),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 24),
+                  ),
+                  _buildNotesView(context),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 80.0),
+                  ),
+                ],
               ),
-              _buildNotesView(context),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 80.0),
-              ),
-            ],
+            ),
           ),
           drawer: AppDrawer(),
           floatingActionButton: _floatingButton(context),
           bottomNavigationBar: _bottomActions(),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           extendBody: true,
         ),
       );
@@ -62,7 +68,10 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               children: <Widget>[
                 const SizedBox(width: 20),
-                const Icon(Icons.menu, color: Colors.black54),
+                InkWell(
+                  child: Icon(Icons.menu, color: Colors.black54),
+                  onTap: () => _scaffoldKey.currentState?.openDrawer(),
+                ),
                 const SizedBox(width: 20),
                 const Expanded(
                   child: Text('Search your notes', softWrap: false),
@@ -96,15 +105,16 @@ class _HomeScreenState extends State<HomeScreen> {
               const Icon(Icons.brush, size: 26, color: Colors.black54),
               const SizedBox(width: 30),
               const Icon(Icons.mic, size: 26, color: Colors.black54),
+              const SizedBox(width: 30),
             ],
           ),
         ),
       );
 
   Widget _floatingButton(BuildContext context) => FloatingActionButton(
-        child: const Icon(Icons.add_circle),
+        child: const Icon(Icons.add),
         onPressed: () {
-          Navigator.pushNamed(context, '/note');
+          Navigator.pushNamed(context, '/create');
         },
       );
 
@@ -127,10 +137,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
           final widget = _gridView ? NotesGrid.create : NotesList.create;
           return widget(
-              notes: notes,
-              onTap: (_) {
-                print('Clicked on notes');
-              });
+            notes: notes,
+            onTap: (_) {
+              print('Clicked on notes');
+            },
+          );
         },
       );
 
@@ -156,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .collection("notes")
         .where('uid', isEqualTo: uid)
         .snapshots()
-        .handleError((e) => debugPrint('query notes failed: $e'))
+        .handleError((e) => print('query notes failed: $e'))
         .map((snapshot) => Note.fromQuery(snapshot));
   }
 }
