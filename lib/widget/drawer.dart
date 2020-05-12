@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../model/user.dart' show CurrentUser;
 
 class AppDrawer extends StatelessWidget {
-
   Future _signOut() async {
     await FirebaseAuth.instance.signOut();
   }
@@ -28,27 +28,17 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider
-        .of<CurrentUser>(context)
-        ?.data;
+    final user = Provider.of<CurrentUser>(context)?.data;
     final displayName = user?.displayName;
     final email = user?.email;
     return Drawer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Container(
-            height: 150,
-            child: UserAccountsDrawerHeader(
-              accountName: displayName != null ? Text(displayName) : null,
-              accountEmail: Text(email),
-            ),
-          ),
-
+          _drawerHeader(context),
           buildListTile("Notes", Icons.history, () {
             Navigator.of(context).pop();
           }),
-
           Divider(height: 10, color: Colors.red),
           buildListTile("Logout", Icons.settings, () async {
             Navigator.of(context).pop();
@@ -58,4 +48,39 @@ class AppDrawer extends StatelessWidget {
       ),
     );
   }
+
+  Widget _drawerHeader(BuildContext context) => SafeArea(
+        child: Container(
+          height: 80,
+          padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
+          child: RichText(
+            text: const TextSpan(
+              style: TextStyle(
+                color: Color(0xFF61656A),
+                fontSize: 36,
+                fontWeight: FontWeight.w300,
+                letterSpacing: 2,
+              ),
+              children: [
+                const TextSpan(
+                  text: 'Go',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+                const TextSpan(
+                  text: 'Note',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 }
