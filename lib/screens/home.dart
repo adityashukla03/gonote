@@ -97,12 +97,44 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <Widget>[
                 const SizedBox(width: 20),
                 InkWell(
-                  child: Icon(Icons.menu, color: Colors.black54),
+                  child: Icon(
+                    Icons.menu,
+                    color: Colors.black,
+                  ),
                   onTap: () => _scaffoldKey.currentState?.openDrawer(),
                 ),
                 const SizedBox(width: 20),
-                const Expanded(
-                  child: Text('Search your notes', softWrap: false),
+                Expanded(
+                  child: Center(
+                    child: RichText(
+                      text: const TextSpan(
+                        style: TextStyle(
+                          color: Color(0xFF61656A),
+                          fontSize: 24,
+                          fontWeight: FontWeight.w300,
+                          letterSpacing: 2,
+                        ),
+                        children: [
+                          const TextSpan(
+                            text: '\u{1F58D} Go',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                          const TextSpan(
+                            text: 'Note',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
                 InkWell(
                   child: Icon(_gridView ? Icons.view_list : Icons.view_module,
