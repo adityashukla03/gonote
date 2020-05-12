@@ -36,11 +36,11 @@ class AppDrawer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           _drawerHeader(context),
-          buildListTile("Notes", Icons.history, () {
+          buildListTile("Notes", Icons.assignment, () {
             Navigator.of(context).pop();
           }),
           Divider(height: 10, color: Colors.red),
-          buildListTile("Logout", Icons.settings, () async {
+          buildListTile("Logout", Icons.power_settings_new, () async {
             Navigator.of(context).pop();
             _signOut();
           }),
