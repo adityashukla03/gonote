@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:gonote/model/filter.dart';
 import 'package:gonote/model/note.dart';
 import 'package:gonote/widget/notes_grid.dart';
 import 'package:gonote/widget/notes_list.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 import '../model/user.dart' show CurrentUser;
 import '../widget/drawer.dart';
@@ -18,32 +21,57 @@ class _HomeScreenState extends State<HomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
-  Widget build(BuildContext context) => StreamProvider.value(
-        value: _createNoteStream(context),
-        child: Scaffold(
-          key: _scaffoldKey,
-          body: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints.tightFor(width: 720),
-              child: CustomScrollView(
-                slivers: <Widget>[
-                  _appBar(context),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: 24),
-                  ),
-                  _buildNotesView(context),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: 80.0),
-                  ),
-                ],
+  Widget build(BuildContext context) => SafeArea(
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.dark.copyWith(
+            systemNavigationBarColor: Colors.white,
+            systemNavigationBarIconBrightness: Brightness.dark,
+          ),
+          child: MultiProvider(
+            providers: [
+              ChangeNotifierProvider(
+                create: (_) => NoteFilter(), // watching the note filter
               ),
+              Consumer<NoteFilter>(
+                builder: (context, filter, child) => StreamProvider.value(
+                  value: _createNoteStream(context, filter),
+                  child: child,
+                ),
+              ),
+            ],
+            child: Consumer2<NoteFilter, List<Note>>(
+              builder: (context, filter, notes, child) {
+                final hasNotes = notes?.isNotEmpty == true;
+                final canCreate = filter.noteState.canCreate;
+                return Scaffold(
+                  key: _scaffoldKey,
+                  body: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints.tightFor(width: 720),
+                      child: CustomScrollView(
+                        slivers: <Widget>[
+                          _appBar(context),
+                          const SliverToBoxAdapter(
+                            child: SizedBox(height: 24),
+                          ),
+                          ..._buildNotesView(context, notes),
+                          const SliverToBoxAdapter(
+                            child: SizedBox(height: 80.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  drawer: AppDrawer(),
+                  floatingActionButton: _floatingButton(context),
+                  bottomNavigationBar: _bottomActions(),
+                  floatingActionButtonLocation:
+                      FloatingActionButtonLocation.endDocked,
+                  extendBody: true,
+                );
+              },
             ),
           ),
-          drawer: AppDrawer(),
-          floatingActionButton: _floatingButton(context),
-          bottomNavigationBar: _bottomActions(),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-          extendBody: true,
         ),
       );
 
@@ -54,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
         automaticallyImplyLeading: false,
         centerTitle: true,
         titleSpacing: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white70,
         elevation: 0,
       );
 
@@ -79,10 +107,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 InkWell(
                   child: Icon(_gridView ? Icons.view_list : Icons.view_module,
                       color: Colors.black54),
-                  onTap: () => setState(() {
-                    _gridView =
-                        !_gridView; // switch between list and grid style
-                  }),
+                  onTap: () => setState(
+                    () {
+                      _gridView =
+                          !_gridView; // switch between list and grid style
+                    },
+                  ),
                 ),
                 const SizedBox(width: 18),
                 _buildAvatar(context),
@@ -99,14 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 56.0,
           padding: const EdgeInsets.symmetric(horizontal: 17),
           child: Row(
-            children: <Widget>[
-              const Icon(Icons.check_box, size: 26, color: Colors.black54),
-              const SizedBox(width: 30),
-              const Icon(Icons.brush, size: 26, color: Colors.black54),
-              const SizedBox(width: 30),
-              const Icon(Icons.mic, size: 26, color: Colors.black54),
-              const SizedBox(width: 30),
-            ],
+            children: <Widget>[],
           ),
         ),
       );
@@ -127,40 +150,24 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// A grid/list view to display notes
-  Widget _buildNotesView(BuildContext context) => Consumer<List<Note>>(
-        builder: (context, notes, _) {
-          if (notes?.isNotEmpty != true) {
-            print("Bank View");
-            return _buildBlankView();
-          }
+  List<Widget> _buildNotesView(BuildContext context, List<Note> notes) {
+    final asGrid = _gridView;
 
-          final widget = _gridView ? NotesGrid.create : NotesList.create;
-          return widget(
-            notes: notes,
-            onTap: (_) {
-              print('Clicked on notes');
-            },
-          );
-        },
-      );
+    final factory = asGrid ? NotesGrid.create : NotesList.create;
 
-  Widget _buildBlankView() => const SliverFillRemaining(
-        hasScrollBody: false,
-        child: Text(
-          'Notes not found',
-          style: TextStyle(
-            color: Colors.black54,
-            fontSize: 14,
-          ),
-        ),
-      );
+    final partition = _partitionNotes(notes);
+
+    return [
+      factory(notes: partition.item2, onTap: _onNoteTap),
+    ];
+  }
 
   void _onNoteTap(Note note) {
     Navigator.pushNamed(context, '/note', arguments: {'note': note});
   }
 
-  Stream<List<Note>> _createNoteStream(BuildContext context) {
+  Stream<List<Note>> _createNoteStream(
+      BuildContext context, NoteFilter filter) {
     final user = Provider.of<CurrentUser>(context)?.data;
     final uid = user?.uid;
     return Firestore.instance
@@ -169,5 +176,16 @@ class _HomeScreenState extends State<HomeScreen> {
         .snapshots()
         .handleError((e) => print('query notes failed: $e'))
         .map((snapshot) => Note.fromQuery(snapshot));
+  }
+
+  Tuple2<List<Note>, List<Note>> _partitionNotes(List<Note> notes) {
+    if (notes?.isNotEmpty != true) {
+      return Tuple2([], []);
+    }
+
+    final indexUnpinned = notes?.indexWhere((n) => !n.pinned);
+    return indexUnpinned > -1
+        ? Tuple2(notes.sublist(0, indexUnpinned), notes.sublist(indexUnpinned))
+        : Tuple2(notes, []);
   }
 }

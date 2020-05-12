@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import './model/user.dart' show CurrentUser;
+import '../model/user.dart' show CurrentUser;
 
 // Since we are handling user input, state is used
 class NoteCreate extends StatefulWidget {
-
-  // Callback function that gets called when user submits a new task
-  final onCreate;
-
-  NoteCreate({@required this.onCreate});
 
   @override
   State<StatefulWidget> createState() {
@@ -20,8 +15,8 @@ class NoteCreate extends StatefulWidget {
 class NoteCreateState extends State<NoteCreate> {
   final _formKey = GlobalKey<FormState>();
   final notesCollection = Firestore.instance.collection('notes');
+  final userNotesCollection = Firestore.instance.collection('users');
 
-  // Controller that handles the TextField
   final TextEditingController notesTitleTextController =
       TextEditingController();
   final TextEditingController notesContentTextController =
@@ -51,6 +46,10 @@ class NoteCreateState extends State<NoteCreate> {
               'createdAt': timestamp.millisecondsSinceEpoch,
             };
             await notesCollection.add(data);
+//            await userNotesCollection.document(uid)
+//                .collection('notes')
+//                .document()
+//                .setData(data);
             Navigator.pop(context);
         },
       ),

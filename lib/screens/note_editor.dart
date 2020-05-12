@@ -2,6 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gonote/model/note.dart';
+import 'package:provider/provider.dart';
+
+import '../model/user.dart' show CurrentUser;
+import 'package:gonote/model/note.dart' show Note;
+import '../service/notes_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NodeEditor extends StatefulWidget {
   const NodeEditor({Key key, this.note}) : super(key: key);
@@ -23,7 +29,7 @@ class _NodeEditorState extends State<NodeEditor> {
   final Note _note;
   final Note _originNote;
 
-  Color get _noteColor => _note.color ?? Colors.white;
+  final notesCollection = Firestore.instance.collection('notes');
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   StreamSubscription<Note> _noteSubscription;
@@ -52,16 +58,102 @@ class _NodeEditorState extends State<NodeEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Editor"),
-      ),
-      body: Center(
-        child: Text(
-          "Developing Editor page........",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    final uid = Provider.of<CurrentUser>(context).data.uid;
+    return SafeArea(
+      child: ChangeNotifierProvider.value(
+        value: _note,
+        child: Consumer<Note>(
+          builder: (_, __, ___) => Hero(
+            tag: 'NoteItem${_note.id}',
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                primaryColor: Colors.white,
+                appBarTheme: Theme.of(context).appBarTheme.copyWith(
+                      elevation: 0,
+                      iconTheme: IconThemeData(
+                        color: Color(0xC2000000),
+                      ),
+                    ),
+                scaffoldBackgroundColor: Colors.white,
+                bottomAppBarColor: Colors.white,
+              ),
+              child: Scaffold(
+                key: _scaffoldKey,
+                appBar: AppBar(
+                  title: Text("Editor"),
+                ),
+                body: _buildBody(context, uid),
+              ),
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildTopActions(BuildContext context, String uid) => [
+          Icon(Icons.delete, size: 26, color: Colors.black54),
+      ];
+
+  Widget _buildBody(BuildContext context, String uid) => DefaultTextStyle(
+        style: TextStyle(
+          color: Color(0xC2000000),
+          fontSize: 18,
+          height: 1.3125,
+        ),
+        child: WillPopScope(
+          onWillPop: () => _onPop(uid),
+          child: Container(
+            height: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: SingleChildScrollView(
+              child: _buildNoteDetail(),
+            ),
+          ),
+        ),
+      );
+
+  Widget _buildNoteDetail() => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          TextField(
+            controller: _titleTextController,
+            style: TextStyle(
+              color: Color(0xFF202124),
+              fontSize: 21,
+              height: 19 / 16,
+              fontWeight: FontWeight.bold,
+            ),
+            decoration: const InputDecoration(
+              hintText: 'Title',
+              border: InputBorder.none,
+              counter: const SizedBox(),
+            ),
+            maxLines: null,
+            maxLength: 1024,
+            textCapitalization: TextCapitalization.sentences,
+          ),
+          const SizedBox(height: 14),
+          TextField(
+            controller: _contentTextController,
+            style: TextStyle(
+              color: Color(0xC2000000),
+              fontSize: 18,
+              height: 1.3125,
+            ),
+            decoration: const InputDecoration.collapsed(hintText: 'Content'),
+            maxLines: null,
+            textCapitalization: TextCapitalization.sentences,
+          ),
+        ],
+      );
+
+  Future<bool> _onPop(String uid) {
+    if (_isDirty && (_note.id != null || _note.isNotEmpty)) {
+      _note
+        ..modifiedAt = DateTime.now()
+        ..saveToFireStore(uid);
+    }
+    return Future.value(true);
   }
 }
