@@ -40,7 +40,7 @@ class AppDrawer extends StatelessWidget {
           Container(
             height: 150,
             child: UserAccountsDrawerHeader(
-              accountName: Text(displayName),
+              accountName: displayName != null ? Text(displayName) : null,
               accountEmail: Text(email),
             ),
           ),
