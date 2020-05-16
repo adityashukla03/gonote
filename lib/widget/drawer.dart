@@ -28,9 +28,6 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<CurrentUser>(context)?.data;
-    final displayName = user?.displayName;
-    final email = user?.email;
     return Drawer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

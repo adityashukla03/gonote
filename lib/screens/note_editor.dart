@@ -91,10 +91,6 @@ class _NodeEditorState extends State<NodeEditor> {
     );
   }
 
-  List<Widget> _buildTopActions(BuildContext context, String uid) => [
-          Icon(Icons.delete, size: 26, color: Colors.black54),
-      ];
-
   Widget _buildBody(BuildContext context, String uid) => DefaultTextStyle(
         style: TextStyle(
           color: Color(0xC2000000),

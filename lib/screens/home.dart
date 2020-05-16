@@ -41,8 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
             child: Consumer2<NoteFilter, List<Note>>(
               builder: (context, filter, notes, child) {
-                final hasNotes = notes?.isNotEmpty == true;
-                final canCreate = filter.noteState.canCreate;
                 return Scaffold(
                   key: _scaffoldKey,
                   body: Center(
@@ -64,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   drawer: AppDrawer(),
                   floatingActionButton: _floatingButton(context),
-//                  bottomNavigationBar: _bottomActions(),
                   floatingActionButtonLocation: _gridView
                       ? FloatingActionButtonLocation.centerDocked
                       : FloatingActionButtonLocation.endDocked,
@@ -152,17 +149,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(width: 10),
               ],
             ),
-          ),
-        ),
-      );
-
-  Widget _bottomActions() => BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        child: Container(
-          height: 56.0,
-          padding: const EdgeInsets.symmetric(horizontal: 17),
-          child: Row(
-            children: <Widget>[],
           ),
         ),
       );

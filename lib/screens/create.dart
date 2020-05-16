@@ -13,7 +13,6 @@ class NoteCreate extends StatefulWidget {
 }
 
 class NoteCreateState extends State<NoteCreate> {
-  final _formKey = GlobalKey<FormState>();
   final notesCollection = Firestore.instance.collection('notes');
   final userNotesCollection = Firestore.instance.collection('users');
 

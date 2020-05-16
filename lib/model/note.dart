@@ -93,8 +93,6 @@ Note toNote(DocumentSnapshot doc) => doc.exists
       )
     : null;
 
-Color _parseColor(num colorInt) => Color(colorInt ?? 0xFFFFFFFF);
-
 extension NoteStateX on NoteState {
   bool get canCreate => this <= NoteState.pinned;
 
