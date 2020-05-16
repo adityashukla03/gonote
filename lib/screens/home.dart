@@ -64,9 +64,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   drawer: AppDrawer(),
                   floatingActionButton: _floatingButton(context),
-                  bottomNavigationBar: _bottomActions(),
-                  floatingActionButtonLocation:
-                      FloatingActionButtonLocation.endDocked,
+//                  bottomNavigationBar: _bottomActions(),
+                  floatingActionButtonLocation: _gridView
+                      ? FloatingActionButtonLocation.centerDocked
+                      : FloatingActionButtonLocation.endDocked,
                   extendBody: true,
                 );
               },
@@ -82,15 +83,15 @@ class _HomeScreenState extends State<HomeScreen> {
         automaticallyImplyLeading: false,
         centerTitle: true,
         titleSpacing: 0,
-        backgroundColor: Colors.white70,
-        elevation: 0,
+        backgroundColor: Colors.white,
+        elevation: 20,
       );
 
   Widget _topActions(BuildContext context) => Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Card(
-          elevation: 2,
+          elevation: 10,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
@@ -166,11 +167,14 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
 
-  Widget _floatingButton(BuildContext context) => FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.pushNamed(context, '/create');
-        },
+  Widget _floatingButton(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            Navigator.pushNamed(context, '/create');
+          },
+        ),
       );
 
   Widget _buildAvatar(BuildContext context) {
