@@ -1,0 +1,39 @@
+image: gorapidio/flutter-fastlane:latest
+
+services:
+  - docker:19.03.5-dind
+
+stages:
+  - lint
+  - build
+  - test
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  #CI_DEBUG_TRACE: "true"
+  IMAGE_TAG: $CI_PROJECT_NAME:$CI_COMMIT_SHA
+  DOMAIN_SUFFIX: "gorapid.io"
+
+lint:
+  script:
+    - flutter analyze
+  stage: lint
+
+build_testing:
+  stage: build
+  script:
+    - echo "$CI_REGISTRY"
+    - echo "$CI_REGISTRY_IMAGE"
+    - echo "$CI_REGISTRY/$CI_PROJECT_NAME"
+    - flutter pub get
+    - flutter build apk
+  environment: testing
+  variables:
+    DOMAIN: "test.$DOMAIN_SUFFIX"
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - build/
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /master/'
