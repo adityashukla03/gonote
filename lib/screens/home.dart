@@ -113,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           letterSpacing: 2,
                         ),
                         children: [
-                          const TextSpan(
+                          TextSpan(
                             text: '\u{1F58D} Go',
                             style: TextStyle(
                               color: Colors.blue,
@@ -121,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontStyle: FontStyle.italic,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: 'Note',
                             style: TextStyle(
                               color: Colors.black,

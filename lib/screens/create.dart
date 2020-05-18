@@ -45,10 +45,6 @@ class NoteCreateState extends State<NoteCreate> {
               'createdAt': timestamp.millisecondsSinceEpoch,
             };
             await notesCollection.add(data);
-//            await userNotesCollection.document(uid)
-//                .collection('notes')
-//                .document()
-//                .setData(data);
             Navigator.pop(context);
         },
       ),

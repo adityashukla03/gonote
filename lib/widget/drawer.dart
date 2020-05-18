@@ -59,7 +59,7 @@ class AppDrawer extends StatelessWidget {
                 letterSpacing: 2,
               ),
               children: [
-                const TextSpan(
+                TextSpan(
                   text: 'Go',
                   style: TextStyle(
                     color: Colors.blue,
@@ -67,7 +67,7 @@ class AppDrawer extends StatelessWidget {
                     fontStyle: FontStyle.italic,
                   ),
                 ),
-                const TextSpan(
+                TextSpan(
                   text: 'Note',
                   style: TextStyle(
                     color: Colors.black,
