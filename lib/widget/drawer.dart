@@ -1,8 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../model/user.dart' show CurrentUser;
 
 class AppDrawer extends StatelessWidget {
   Future _signOut() async {
