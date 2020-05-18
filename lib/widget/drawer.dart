@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter/material.dart';
+import 'package:gonote/model/todo.dart';
 
 class AppDrawer extends StatelessWidget {
   Future _signOut() async {
@@ -33,10 +34,13 @@ class AppDrawer extends StatelessWidget {
           buildListTile("Notes", Icons.assignment, () {
             Navigator.of(context).pop();
           }),
+          buildListTile("Todo", Icons.check, () {
+            Navigator.popAndPushNamed(context, '/todo');
+          }),
           Divider(height: 10, color: Colors.red),
           buildListTile("Logout", Icons.power_settings_new, () async {
             Navigator.of(context).pop();
-            _signOut();
+            await _signOut();
           }),
         ],
       ),
