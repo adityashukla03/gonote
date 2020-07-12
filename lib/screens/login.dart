@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'
-    show FirebaseAuth, AuthResult, GoogleAuthProvider;
 import 'package:flutter/services.dart';
-import 'package:google_sign_in/google_sign_in.dart' show GoogleSignIn;
+import 'package:gonote/service/auth.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,9 +8,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _auth = FirebaseAuth.instance;
-  final _googleSignIn = GoogleSignIn();
 
+  final AuthService _authService = AuthService();
   final _loginForm = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -156,19 +153,12 @@ class _LoginScreenState extends State<LoginScreen> {
   void _signInWithGoogle() async {
     _setLoggingIn();
     String errMsg;
-
     try {
-      final googleUser = await _googleSignIn.signIn();
-      final googleAuth = await googleUser.authentication;
-      final credential = GoogleAuthProvider.getCredential(
-        idToken: googleAuth.idToken,
-        accessToken: googleAuth.accessToken,
-      );
-      await _auth.signInWithCredential(credential);
-    } catch (e, s) {
-      debugPrint('google signIn failed: $e. $s');
+      final result = await _authService.signInWithGoogle();
+      print(result);
+    } catch (e) {
+      debugPrint('google signIn failed: $e');
       errMsg = 'Login failed, please try again later.';
-    } finally {
       _setLoggingIn(false, errMsg);
     }
   }
@@ -181,32 +171,32 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       _setLoggingIn();
       final result =
-          await _doEmailSignIn(_emailController.text, _passwordController.text);
-      debugPrint('Login result: $result');
-    } on PlatformException catch (e) {
-      errMsg = e.message;
-    } catch (e, s) {
-      debugPrint('login failed: $e. $s');
+          await _authService.loginWithEmailPwd(_emailController.text, _passwordController.text);
+      if (result is PlatformException && result.code == 'ERROR_USER_NOT_FOUND') {
+        try{
+          final result = await _authService.registerwithEmailPwd(_emailController.text, _passwordController.text);
+          if (result == null) {
+            errMsg = 'Login failed, please try again later.';
+            _setLoggingIn(false, errMsg);
+          } else {
+            errMsg = '';
+            _setLoggingIn(false, errMsg);
+          }
+        } catch (e) {
+          debugPrint('login failed: $e');
+          errMsg = e.message;
+          _setLoggingIn(false, errMsg);
+        }
+      } else {
+        errMsg = 'Login failed, please try again later.';
+        _setLoggingIn(false, errMsg);
+      }
+    } catch (e) {
+      debugPrint('login failed: $e');
       errMsg = 'Login failed, please try again later.';
-    } finally {
       _setLoggingIn(false, errMsg);
     }
   }
-
-  Future<AuthResult> _doEmailSignIn(String email, String password,
-          {bool signUp = false}) =>
-      (signUp
-              ? _auth.createUserWithEmailAndPassword(
-                  email: email, password: password)
-              : _auth.signInWithEmailAndPassword(
-                  email: email, password: password))
-          .catchError((e) {
-        if (e is PlatformException && e.code == 'ERROR_USER_NOT_FOUND') {
-          return _doEmailSignIn(email, password, signUp: true);
-        } else {
-          throw e;
-        }
-      });
 
   void _setLoggingIn([bool loggingIn = true, String errMsg]) {
     if (mounted) {

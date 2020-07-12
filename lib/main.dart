@@ -11,11 +11,14 @@ import './screens/note_editor.dart';
 import 'screens/settings_screen.dart';
 import 'screens/todo_list.dart';
 
+import 'package:flutter/services.dart';
+
 void main() => runApp(NoteApp());
 
 class NoteApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return TODO();
   }
 }

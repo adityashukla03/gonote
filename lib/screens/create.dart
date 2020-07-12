@@ -13,6 +13,7 @@ class NoteCreate extends StatefulWidget {
 }
 
 class NoteCreateState extends State<NoteCreate> {
+
   final notesCollection = Firestore.instance.collection('notes');
   final userNotesCollection = Firestore.instance.collection('users');
 

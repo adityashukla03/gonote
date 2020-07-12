@@ -1,7 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter/material.dart';
+import 'package:gonote/service/auth.dart';
 
 class AppDrawer extends StatelessWidget {
+
+  final AuthService _authService = AuthService();
+
   Future _signOut() async {
     await FirebaseAuth.instance.signOut();
   }
@@ -39,7 +43,7 @@ class AppDrawer extends StatelessWidget {
           Divider(height: 10, color: Colors.red),
           buildListTile("Logout", Icons.power_settings_new, () async {
             Navigator.of(context).pop();
-            await _signOut();
+            await _authService.signout();
           }),
         ],
       ),

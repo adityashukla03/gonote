@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import './widget/drawer.dart';
 
 class NoteList extends StatelessWidget {
+
   final collection = Firestore.instance.collection('tasks');
 
   @override
