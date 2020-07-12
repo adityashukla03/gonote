@@ -189,12 +189,6 @@ class AuthService {
                   'createdAt': timestamp.millisecondsSinceEpoch,
                 };
                 await userCollection.document(user.uid).setData(data);
-                //final notesCollection = userCollection.document(user.uid).collection('notes');
-                //await userCollection.document(user.uid).collection('notes').document().setData({});
-                //await userCollection.document(user.uid).collection('todo').document().setData({});
-//                await userCollection.document(user.uid).collection(collectionPath);
-//                await userCollection.document(user.uid).collection('todo').add({});
-                //final todoCollection = Firestore.instance.collection('users').document(user.uid).collection('todo');
                 return result;
               } catch(e){
                 await signout();

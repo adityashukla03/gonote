@@ -14,7 +14,6 @@ class NoteCreate extends StatefulWidget {
 
 class NoteCreateState extends State<NoteCreate> {
 
-  final notesCollection = Firestore.instance.collection('notes');
   final userNotesCollection = Firestore.instance.collection('users');
 
   final TextEditingController notesTitleTextController =
@@ -45,7 +44,7 @@ class NoteCreateState extends State<NoteCreate> {
               'content': notesContentTextController.text,
               'createdAt': timestamp.millisecondsSinceEpoch,
             };
-            await notesCollection.add(data);
+            await userNotesCollection.document(user.uid).collection('notes').add(data);
             Navigator.pop(context);
         },
       ),

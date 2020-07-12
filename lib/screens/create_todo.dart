@@ -15,7 +15,7 @@ class TodoCreate extends StatefulWidget {
 class TodoCreateState extends State<TodoCreate> {
   final _formKey = GlobalKey<FormState>();
 
-  final collection = Firestore.instance.collection('todo');
+  final userTodoCollection = Firestore.instance.collection('users');
 
   // Controller that handles the TextField
   final TextEditingController controller = TextEditingController();
@@ -53,7 +53,7 @@ class TodoCreateState extends State<TodoCreate> {
               'name': controller.text,
               'completed': false,
             };
-            await collection.add(data);
+            await userTodoCollection.document(user.uid).collection('todo').add(data);
             Navigator.pop(context);
           }
         },

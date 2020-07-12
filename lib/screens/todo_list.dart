@@ -9,7 +9,6 @@ class TodoList extends StatefulWidget {
 }
 
 class _TodoListState extends State<TodoList> {
-  final collection = Firestore.instance.collection('todo');
 
   bool todoCheck = false;
 
@@ -17,6 +16,7 @@ class _TodoListState extends State<TodoList> {
   Widget build(BuildContext context) {
     final user = Provider.of<CurrentUser>(context)?.data;
     final uid = user?.uid;
+    final userTodoCollection = Firestore.instance.collection('users').document(uid).collection('todo');
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -28,7 +28,7 @@ class _TodoListState extends State<TodoList> {
         elevation: 0.0,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: collection.where('uid', isEqualTo: uid).snapshots(),
+        stream: userTodoCollection.where('uid', isEqualTo: uid).snapshots(),
         builder: (context, snapshot) {
           // Handling errors from firebase
           if (snapshot.hasError) return Text('Error: ${snapshot.error}');
@@ -44,7 +44,7 @@ class _TodoListState extends State<TodoList> {
                       title: Text(document['name']),
                       // Updating the database on task completion
                       onChanged: (newValue) =>
-                          collection.document(document.documentID).updateData(
+                          userTodoCollection.document(document.documentID).updateData(
                         {'completed': newValue},
                       ),
                     );

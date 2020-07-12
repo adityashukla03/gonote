@@ -193,7 +193,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final user = Provider.of<CurrentUser>(context)?.data;
     final uid = user?.uid;
     return Firestore.instance
-        .collection("notes")
+        .collection("users")
+        .document(uid)
+        .collection('notes')
         .where('uid', isEqualTo: uid)
         .snapshots()
         .handleError((e) => print('query notes failed: $e'))

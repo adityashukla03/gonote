@@ -29,7 +29,8 @@ class _NodeEditorState extends State<NodeEditor> {
   final Note _note;
   final Note _originNote;
 
-  final notesCollection = Firestore.instance.collection('notes');
+//  final userNotesCollection = Firestore.instance.collection('users');
+//  final notesCollection = Firestore.instance.collection('notes');
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   StreamSubscription<Note> _noteSubscription;

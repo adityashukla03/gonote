@@ -141,7 +141,7 @@ extension NoteStore on Note {
 }
 
 /// Returns reference to the notes collection of the user [uid].
-CollectionReference notesCollection(String uid) => Firestore.instance.collection('notes');
+CollectionReference notesCollection(String uid) => Firestore.instance.collection('users').document(uid).collection('notes');
 
 /// Returns reference to the given note [id] of the user [uid].
 DocumentReference noteDocument(String id, String uid) => notesCollection(uid).document(id);
