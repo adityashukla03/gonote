@@ -66,6 +66,7 @@ class Note with ChangeNotifier {
         createdAt:
             (updateTimestamp || createdAt == null) ? DateTime.now() : createdAt,
       )..update(this, updateTimestamp: updateTimestamp);
+
 }
 
 enum NoteState {

@@ -134,6 +134,12 @@ extension NoteStore on Note {
         : col.document(id).updateData(toJson());
   }
 
+  /// Delete this note from FireStore.
+  Future<dynamic>delFromFireStore(String uid) async {
+    final col = notesCollection(uid);
+    return col.document(id).delete();
+  }
+
   /// Update this note to the given [state].
   Future<void> updateState(NoteState state, String uid) async => id == null
       ? updateWith(state: state) // new note

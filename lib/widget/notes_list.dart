@@ -34,9 +34,11 @@ class NotesList extends StatelessWidget {
                 .flatMapIndexed((i, note) => <Widget>[
                       InkWell(
                         onTap: () => onTap?.call(note),
-                        child: NoteItem(note: note),
+                        child: NoteItem(note: note, isGridType: false),
+
                       ),
-                      if (i < notes.length - 1) const SizedBox(height: 10),
+                      if (i < notes.length - 1)
+                        const SizedBox(height: 10),
                     ])
                 .asList(),
           ),

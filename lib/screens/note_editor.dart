@@ -9,6 +9,8 @@ import 'package:gonote/model/note.dart' show Note;
 import '../service/notes_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:gonote/widget/delet_btn.dart';
+
 class NodeEditor extends StatefulWidget {
   const NodeEditor({Key key, this.note}) : super(key: key);
 
@@ -81,7 +83,15 @@ class _NodeEditorState extends State<NodeEditor> {
               child: Scaffold(
                 key: _scaffoldKey,
                 appBar: AppBar(
-                  title: Text("Editor"),
+                  title: Text(
+                    "Editor",
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                  actions: <Widget>[
+                    DeleteBtn(note: _originNote, atDetailScreen: true),
+                  ],
                 ),
                 body: _buildBody(context, uid),
               ),

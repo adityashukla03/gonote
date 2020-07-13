@@ -11,6 +11,8 @@ import 'package:tuple/tuple.dart';
 import '../model/user.dart' show CurrentUser;
 import '../widget/drawer.dart';
 
+//import 'package:gonote/widget/custom_buttons.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _HomeScreenState();
@@ -45,7 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   key: _scaffoldKey,
                   body: Center(
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints.tightFor(width: 720),
+                      constraints: _gridView
+                          ? const BoxConstraints.tightFor(width: 720)
+                          : const BoxConstraints.expand(width: 720),
                       child: CustomScrollView(
                         slivers: <Widget>[
                           _appBar(context),

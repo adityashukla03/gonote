@@ -37,14 +37,14 @@ class NotesGrid extends StatelessWidget {
           ),
           delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) =>
-                _noteItem(context, notes[index]),
+                _noteItem(context, notes[index], true),
             childCount: notes.length,
           ),
         ),
       );
 
-  Widget _noteItem(BuildContext context, Note note) => InkWell(
+  Widget _noteItem(BuildContext context, Note note, bool isGridType) => InkWell(
         onTap: () => onTap?.call(note),
-        child: NoteItem(note: note),
+        child: NoteItem(note: note, isGridType: isGridType),
       );
 }
