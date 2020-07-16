@@ -90,7 +90,7 @@ class _NodeEditorState extends State<NodeEditor> {
                     ),
                   ),
                   actions: <Widget>[
-                    DeleteBtn(note: _originNote, atDetailScreen: true),
+                    DeleteBtn(todo: null, note: _originNote, atDetailScreen: true),
                   ],
                 ),
                 body: _buildBody(context, uid),

@@ -52,6 +52,8 @@ class TodoCreateState extends State<TodoCreate> {
               'uid': uid,
               'name': controller.text,
               'completed': false,
+              'createdAt': DateTime.now(),
+              'modifiedAt': DateTime.now(),
             };
             await userTodoCollection.document(user.uid).collection('todo').add(data);
             Navigator.pop(context);

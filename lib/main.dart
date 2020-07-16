@@ -4,6 +4,7 @@ import 'package:gonote/screens/create.dart';
 import 'package:gonote/screens/create_todo.dart';
 import 'package:gonote/screens/home.dart';
 import 'package:gonote/screens/login.dart';
+import 'package:gonote/screens/todo_editor.dart';
 import 'package:provider/provider.dart';
 
 import './model/user.dart' show CurrentUser;
@@ -77,6 +78,10 @@ class NoteState extends State<TODO> {
       case '/create': {
           return _buildRoute(settings, (_) => NoteCreate());
         }
+      case '/todo_edit': {
+        final todo = (settings.arguments as Map ?? {})['todo'];
+        return _buildRoute(settings, (_) => TodoEditor(todo: todo));
+      }
       default:
         return null;
     }

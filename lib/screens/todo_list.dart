@@ -1,7 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gonote/model/note.dart';
+import 'package:gonote/model/todo.dart';
 import 'package:provider/provider.dart';
 import '../model/user.dart' show CurrentUser;
+
+import 'package:gonote/widget/delet_btn.dart';
+import 'package:gonote/screens/todo_editor.dart';
 
 class TodoList extends StatefulWidget {
   @override
@@ -39,15 +44,33 @@ class _TodoListState extends State<TodoList> {
               return ListView(
                 children: snapshot.data.documents.map(
                   (document) {
-                    return CheckboxListTile(
-                      value: document['completed'],
-                      title: Text(document['name']),
-                      // Updating the database on task completion
-                      onChanged: (newValue) =>
-                          userTodoCollection.document(document.documentID).updateData(
-                        {'completed': newValue},
-                      ),
-                    );
+                    return
+                      Row(
+                        //mainAxisAlignment: MainAxisAlignment.,
+                        children: <Widget>[
+                          Checkbox(
+                            value: document['completed'],
+                            onChanged: (newValue) => userTodoCollection.document(document.documentID).updateData(
+                              {'completed': newValue},),
+                          ),
+                          Flexible(
+                            flex: 1,
+                            fit: FlexFit.tight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Text(document['name']),
+                            ),
+                          ),
+                          DeleteBtn(todo: Todo(id:document.documentID, name:document['name'], completed:document['completed'], createdAt:document['createdAt'], modifiedAt:document['modifiedAt']), note: null, atDetailScreen: true),
+                          IconButton(
+                            onPressed: () async {
+                              Navigator.pushNamed(context, '/todo_edit', arguments: {'todo': Todo(id:document.documentID, name:document['name'], completed:document['completed'], createdAt:document['createdAt'], modifiedAt:document['modifiedAt'])});
+                            },
+                            icon: Icon(Icons.edit),
+                            //alignment: Alignment.centerRight,
+                          )
+                        ],
+                      );
                   },
                 ).toList(),
               );

@@ -35,7 +35,6 @@ class NotesList extends StatelessWidget {
                       InkWell(
                         onTap: () => onTap?.call(note),
                         child: NoteItem(note: note, isGridType: false),
-
                       ),
                       if (i < notes.length - 1)
                         const SizedBox(height: 10),

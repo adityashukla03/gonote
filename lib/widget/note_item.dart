@@ -54,7 +54,10 @@ class NoteItem extends StatelessWidget {
               fit: this.isGridType ? FlexFit.tight : FlexFit.loose,
             ),
             const SizedBox(height: 8),
-            DeleteBtn(note: this.note),
+            Align(
+              child: DeleteBtn(todo: null, note: this.note),
+              alignment: Alignment.bottomRight,
+            ),
           ],
         ),
       ),
